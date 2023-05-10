@@ -1,9 +1,16 @@
-function readRoverInput(input){
+function parseInput(input){
     input.split('\n')
     return {
-
+    grid:{
+        width: input[0].split(' ')[0] ,
+        height: input[0].split(' ')[1]
+    }
     };
 }
+function hasRoverCrashToGridBorder(rover,grid){
+    return rover.x > -1 && rover.x <= grid.width && rover.y > -1 && rover.y <= grid.height
+}
+
 function newRover(x,y,orientation){
     return {
         x: x,
@@ -16,24 +23,22 @@ function newRover(x,y,orientation){
 function getUsableOrientation(orientation){
     return {
         'N' :[0,1],
-        'W' :[1,0],
+        'W' :[-1,0],
         'S' :[0,-1],
-        'E' :[-1,0]
+        'E' :[1,0]
     }[orientation]
 }
 function getFinalCoordinates(rover, instructions){
-
-    return instructions.split('').reduce((currentRover,instruction)=>calculateNextCoordinate(currentRover,instruction),rover)
+    return instructions.split('').reduce(
+        (currentRover,instruction)=>calculateNextCoordinate(currentRover,instruction),
+        rover)
 }
 function calculateNextCoordinate(rover,instruction){
-    switch (instruction){
-        case 'R':
-            return turnToRight(rover);
-        case 'L':
-            return turnToLeft(rover);
-        case 'M':
-            return moveFoward(rover);
-    }
+    return {
+         'R': turnToRight(rover),
+         'L': turnToLeft(rover),
+         'M': moveFoward(rover)
+    }[instruction]
 }
 
 function turnToRight(rover){
@@ -75,8 +80,10 @@ function moveFoward(rover){
 function calculateMovingFoward(axis,magnitude,orientation){
     return magnitude+getUsableOrientation(orientation)[axis==='x'? 0 :1]
 }
-function displayResults(){
+function parseRovertResult(rover){
+    return Object.values(rover).join(' ')
 }
+
 
 
 module.exports = {
